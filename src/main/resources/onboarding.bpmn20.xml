@@ -54,7 +54,7 @@
         </scriptTask>
 -->
 
-        <serviceTask id="automatedIntro" name="Generic and Automated Data Entry 8888"
+        <serviceTask id="automatedIntro" name="Generic and Automated Data Entry"
                      activiti:class="com.basaki.example.activiti.AutomatedDataDelegate"></serviceTask>
 
         <sequenceFlow id="automatedIntroPath" sourceRef="decision"

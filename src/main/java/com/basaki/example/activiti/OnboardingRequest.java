@@ -27,9 +27,23 @@ import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 
+/**
+ * {@code OnboardingRequest} is responsible for the creation of Activiti
+ * Process Engine and for loading a simple Onboarding process. The process
+ * prompts for user name and experience. If the years of experience is above 3
+ * years, a task for a personalized onboarding welcome message is issued. The
+ * task prompts the user to manually enter data into a faux backend system. If
+ * the years of experience is 3 years or below, it automatically integrates data
+ * with a faux backend system.
+ * <p/>
+ *
+ * @since 7/24/17
+ */
+@SuppressWarnings({"squid:S106", "squid:S3776"})
 public class OnboardingRequest {
 
     public static void main(String[] args) throws ParseException {
+        //creates the Process Engine using a memory-based h2 embedded database
         ProcessEngineConfiguration cfg =
                 new StandaloneProcessEngineConfiguration()
                         .setJdbcUrl("jdbc:h2:mem:activiti;DB_CLOSE_DELAY=1000")
@@ -39,15 +53,22 @@ public class OnboardingRequest {
                         .setDatabaseSchemaUpdate(
                                 ProcessEngineConfiguration.DB_SCHEMA_UPDATE_TRUE);
         ProcessEngine processEngine = cfg.buildProcessEngine();
+
+        //displays the Process Engine configuration and Activiti version.
         String pName = processEngine.getName();
         String ver = ProcessEngine.VERSION;
         System.out.println(
                 "ProcessEngine [" + pName + "] Version: [" + ver + "]");
 
+        //loads the supplied onboarding.bpmn20.xml BPMN model and deploys
+        // it to Activiti Process Engine.
         RepositoryService
                 repositoryService = processEngine.getRepositoryService();
         Deployment deployment = repositoryService.createDeployment()
                 .addClasspathResource("onboarding.bpmn20.xml").deploy();
+
+        //retrieves the deployed model, proving that it is in the
+        // Activiti repository.
         ProcessDefinition
                 processDefinition =
                 repositoryService.createProcessDefinitionQuery()
@@ -57,6 +78,7 @@ public class OnboardingRequest {
                         + processDefinition.getName() + "] with id ["
                         + processDefinition.getId() + "]");
 
+        //starts an instance of the 'Onboarding' process.
         RuntimeService runtimeService = processEngine.getRuntimeService();
         ProcessInstance processInstance = runtimeService
                 .startProcessInstanceByKey("onboarding");
@@ -78,7 +100,7 @@ public class OnboardingRequest {
             for (int i = 0; i < tasks.size(); i++) {
                 Task task = tasks.get(i);
                 System.out.println("Processing Task [" + task.getName() + "]");
-                Map<String, Object> variables = new HashMap<String, Object>();
+                Map<String, Object> variables = new HashMap<>();
                 FormData formData = formService.getTaskFormData(task.getId());
                 for (FormProperty formProperty : formData.getFormProperties()) {
                     if (StringFormType.class.isInstance(
