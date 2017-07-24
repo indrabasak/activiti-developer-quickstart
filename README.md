@@ -1,10 +1,9 @@
 [![Build Status][travis-badge]][travis-badge-url]
 
-![](./img/menagerie.jpg)
 
 Activiti Developer Quickstart
 ===============================
-
+TODO
 
 
 [travis-badge]: https://travis-ci.org/indrabasak/activiti-developer-quickstart.svg?branch=master
